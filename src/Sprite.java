@@ -69,11 +69,11 @@ public class Sprite {
 	public Rectangle getBounds(){
 		if(x_direction < 0)
 			return new Rectangle(x_coordinate + imageResource.getImageOffset(), y_coordinate, 
-					imageResource.getImage().getIconWidth() - imageResource.getImageOffset()/2+35, 
+					imageResource.getImage().getIconWidth() - imageResource.getImageOffset()/2+15, 
 					imageResource.getImage().getIconHeight());
 		else
 			return new Rectangle(x_coordinate + imageResource.getImageOffset() +10, y_coordinate, 
-					imageResource.getImage().getIconWidth() - imageResource.getImageOffset()/2+35, 
+					imageResource.getImage().getIconWidth() - imageResource.getImageOffset()/2+15, 
 					imageResource.getImage().getIconHeight());
 	}
 
@@ -151,9 +151,10 @@ public class Sprite {
 	public void die() {
 		isDead = true;
 		x_coordinate = 50;
-		y_coordinate = 300;
+		y_coordinate = 340;
 		y_direction = 0;
 		x_direction = 1;
+		jumpCounter = -1;
 		
 	}
 	// As the method implies, calling this function makes the character come back to life.

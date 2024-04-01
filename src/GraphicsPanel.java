@@ -12,18 +12,23 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.JPanel;
 import javax.swing.Timer;
+import java.util.Scanner;
 
 public class GraphicsPanel extends JPanel implements KeyListener, MouseListener{
 
@@ -32,20 +37,28 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener{
 	private Background background1;			// The background object will display a picture in the background.
 	private Background background2;			// There has to be two background objects for scrolling.
 
-	
+
 	public int actualState = 0;
 	Graphics2D g2;
-	
+
 	private final int titleState = 0;
 	private final int leaderboard = 1;
 	private final int playState = 2;
 	private final int loseState = 3;
-	private final int dialogueState = 4; 
-	
+	private final int userState = 4; 
+
 	private Sprite sprite;					// create a Sprite object
 	private Guard guard;
 	private Rectangle a;
 	private Rectangle b;
+	private Rectangle c;
+	private ArrayList<Integer> ints;
+	String text = "";
+	int user = 1;
+	
+
+	private double elapseTime = 0;
+
 
 	// pretty much any image that you would like by passing it
 	// the path for the image.
@@ -53,7 +66,8 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener{
 	private int boxCounter;
 
 	public GraphicsPanel(){
-	
+
+		ints = new ArrayList<Integer>();
 		background1 = new Background();	// You can set the background variable equal to an instance of any of  
 		background2 = new Background(-background1.getImage().getIconWidth());								
 
@@ -64,7 +78,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener{
 		// image smaller, so the bigger the scale, the smaller the image will be.
 		items = new ArrayList<Item>();
 
-		sprite = new Sprite(50, 300);	
+		sprite = new Sprite(50, 340);	
 		guard = new Guard(900, 300);
 		// The Sprite constuctor has two parameter - - the x coordinate and y coordinate
 
@@ -82,6 +96,8 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener{
 		timer.start();
 		this.setFocusable(true);					     // for keylistener
 		this.addKeyListener(this);
+
+
 	}
 
 	// method: paintComponent
@@ -91,40 +107,58 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener{
 	// parameters: Graphics g - This object is used to draw your images onto the graphics panel.
 	public void paintComponent(Graphics g){
 		Graphics2D g2 = (Graphics2D) g;
-	
-		
+
+
 		if (actualState == titleState) {
 			Item title = new Item(210, 100, "images/background/Title.png", 4);  
 			title.draw(g2, this);
 			//g2.drawRect(90, 190, 443, 50);
 			a = new Rectangle(410, 250, 254, 50);
 			g2.draw(a);
-		
+
 			g2.fillRect(410, 250, 254, 50);
 			g2.setFont(new Font("TimesRoman", Font.PLAIN, 35)); 
-		
 			g2.setFont(new Font("TimesRoman", Font.PLAIN, 33)); 
-		
-			
+
+
 			g2.setColor(Color.WHITE);
 			b = new Rectangle(410, 350, 254, 50);
 			g2.draw(b);
 			g2.fillRect(410, 350, 254, 50);
-		
+
 			g2.drawString("PLAY", 495, 285);
-			
+
 			g2.setColor(Color.BLACK);
 			g2.drawString("LEADERBOARD", 413, 385);
-			
-			
-	
+
+
 		}
-		
+
+		else if (actualState == leaderboard) {
+			int index = 0;
+			Collections.sort(ints);
+			g2.setFont(new Font("TimesRoman", Font.PLAIN, 35)); 
+			g2.drawString("LEADERBOARD", 200, 100);
+			
+			g2.setFont(new Font("TimesRoman", Font.PLAIN, 20)); 
+			g2.drawString("HIGH SCORE: " + ints.get(ints.size()-1), 200, 150);
+//			for (int i = 0; i <ints.size(); i++) {
+//				g2.drawString("" + ints.get(i), 200, 150 + 40*index);
+//			}
+			
+			c = new Rectangle(870, 570, 100, 50);
+			g2.draw(c);
+			g2.fillRect(870, 570, 254, 50);
+			g2.setColor(Color.WHITE);
+			g2.drawString("PLAY GAME!", 930, 585);
+			
+		}
 		else if (actualState == playState) {
+			
 			sprite.resurrect();
 			background1.draw(this, g);
 			background2.draw(this, g);
-			
+
 			sprite.draw(g2, this);
 			guard.draw(g2, this);
 
@@ -140,36 +174,82 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener{
 				g2.draw(new Rectangle(items.get(i).getBounds()));
 			}
 
-			
-
+			//g2.drawRect(10, 10, 40, 40);
+			g2.setFont(new Font("TimesRoman", Font.PLAIN, 35)); 
+			g2.drawString("Timer: " + (int)elapseTime, 15, 30);
 		}
+
+
 		else if (actualState == loseState) {
 			Item title = new Item(290, 100, "images/background/lose.png", 2);  
 			title.draw(g2, this);
-			
+
 			a = new Rectangle(410, 250, 254, 50);
 			g2.draw(a);
-		
+
 			g2.fillRect(410, 250, 254, 50);
-			g2.setFont(new Font("TimesRoman", Font.PLAIN, 35)); 
-		
+
+
 			g2.setFont(new Font("TimesRoman", Font.PLAIN, 33)); 
-		
-			
+
+
 			g2.setColor(Color.WHITE);
 			b = new Rectangle(410, 350, 254, 50);
 			g2.draw(b);
 			g2.fillRect(410, 350, 254, 50);
-		
+
 			g2.drawString("PLAY AGAIN", 440, 285);
-			
+
 			g2.setColor(Color.BLACK);
 			g2.drawString("LEADERBOARD", 413, 385);
-			
+
 			sprite.die();
-			
+			ints.add((int)(elapseTime));
+			elapseTime = 0;
+
 		}
+
+		else if (actualState == userState) {
+			
+			System.out.println("Jello");
+			Scanner s = new Scanner(System.in);
 		
+			
+			g.drawRect(0, 1000, 1000, 1000);
+			g.setFont(new Font("TimesRoman", Font.PLAIN, 50)); 
+			g.drawString("ENTER NAME", 250, 185);
+
+
+			g2.setColor(Color.blue);
+			g2.fillRect(350, 200, 315, 50);
+			g2.setColor(Color.black);
+			
+			System.out.println(text);
+			g2.drawString(text, 350, 200);
+			
+			addKeyListener(new KeyAdapter(){
+				  public void keyTyped(KeyEvent e){
+					 if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+						 actualState = 2;
+						 repaint();
+					 }
+					 else {
+						  text += e.getKeyChar();
+						    System.out.println(text);
+						    repaint();
+						  }
+					 }
+				  
+			});
+		
+			
+
+			// You can play with this code to center the text
+			
+		
+
+		}
+
 	}
 
 	// method:clock
@@ -178,10 +258,8 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener{
 	//				coordinates you should repaint the panel. 
 	public void clock(){
 		// You can move any of your objects by calling their move methods.
-		
+
 		if (actualState == playState) {
-
-
 			background1.move();
 			background2.move();
 			sprite.move(this);
@@ -191,29 +269,37 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener{
 				items.add(new Item(background1.getImage().getIconWidth() - 100, 
 						(int)(Math.random() * background1.getImage().getIconHeight()), "images/objects/Cinderblock.png", 15));
 
+
+			elapseTime+=.01;
+			System.out.println((int)(elapseTime));
+
 			// You can also check to see if two objects intersect like this. In this case if the sprite collides with the
 			// item, the item will get smaller. 
-			
-			
+
+
 			for (int i = 0; i < items.size(); i++) {
 				items.get(i).move(this);
-				
+				if (items.get(i).x_coordinate == 0) {
+					items.remove(i);
+				}
+
 				if(sprite.collision(items.get(i))) {
 					System.out.println("stop");
 					items.remove(i);
 					//sprite.die();
-					
+
 					actualState = 3;
-					
+
 					sprite.stopMove();
 
 				}
 				this.repaint();
 			}
+
 		}
-		
-		}
-		
+	}
+
+
 
 	// method: keyPressed()
 	// description: This method is called when a key is pressed. You can determine which key is pressed using the 
@@ -227,8 +313,8 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener{
 				sprite.walkRight();
 			else if(e.getKeyCode() == KeyEvent.VK_LEFT)
 				sprite.walkLeft();
-		//	else if(e.getKeyCode() == KeyEvent.VK_UP)
-				//sprite.moveUp();
+			//	else if(e.getKeyCode() == KeyEvent.VK_UP)
+			//sprite.moveUp();
 			//else if(e.getKeyCode() == KeyEvent.VK_DOWN && !(sprite.collision(item) && sprite.getY() < item.getY()))
 			//	sprite.moveDown();
 			else if(e.getKeyCode() == KeyEvent.VK_SPACE)
@@ -237,14 +323,16 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener{
 				sprite.jump();
 			//else if(e.getKeyCode() == KeyEvent.VK_DOWN) {
 			//	sprite.
-		//	}
-//			else if(e.getKeyCode() == KeyEvent.VK_D) {
-//				playSound("src/sounds/bump.WAV");
-//				sprite.die();	
-//			}
-		}
-
+			//	}
+			//			else if(e.getKeyCode() == KeyEvent.VK_D) {
+			//				playSound("src/sounds/bump.WAV");
+			//				sprite.die();	
+			//			}
 		
+		}
+		
+
+
 	}
 
 	// This function will play the sound "fileName".
@@ -293,18 +381,28 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener{
 	@Override
 	public void mousePressed(MouseEvent e) {
 		System.out.println(e.getX() + " " + e.getY());
-		
+
 		if(a.contains(e.getX(), e.getY())) {
-			actualState = playState;
+			actualState = 2;
 			System.out.println(actualState);
+			System.out.println(userState);
+			this.repaint();
 		}
-		
+
 		if(b.contains(e.getX(), e.getY())) {
 			actualState = 1;
+			this.repaint();
 		}
+		
+		if(c.contains(e.getX(), e.getY())) {
+			actualState = 2;
+			this.repaint();
+		}
+		
 
 	}
 
+	
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
 
@@ -324,6 +422,6 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener{
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

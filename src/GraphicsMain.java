@@ -12,7 +12,7 @@ public class GraphicsMain extends JFrame{
 
 	private static MyAudioPlayer thePlayer;
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		System.out.println("print");
 
 		//thePlayer = new MyAudioPlayer(".//sounds//prison.mp3", true);
@@ -27,6 +27,7 @@ public class GraphicsMain extends JFrame{
 		window.pack();
 		window.setLocationRelativeTo(null);
 		window.setVisible(true);
+
 
 	}
 

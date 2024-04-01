@@ -16,7 +16,7 @@ public class ImageResource {
 	private int imageRefreshCounter = 0;
 	private static final int IMAGE_REFRESH_MAX = 3;
 
-	private static final int SCALE = 7;
+	private static final int SCALE = 9;
 
 	private ImageIcon[] runningImages;
 	private ImageIcon[] jumpingImages;
