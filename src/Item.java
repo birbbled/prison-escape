@@ -125,10 +125,10 @@ public class Item{
 	//            that you can figure out the dimensions and not go off of the panel when it moves.		   
 	public void move(Component c){
 		// move to the right or left - speed will be positive
-		if (((x_coordinate > 0 && x_direction == -2) || (x_coordinate < c.getWidth() && x_direction == 2 )))
+		if (((x_coordinate > 0) || (x_coordinate < c.getWidth() && x_direction == 2 )))
 			x_coordinate += (x_direction);
 		// move up or down
-		else if ((y_coordinate > 0 && y_direction == -1) || (y_coordinate < c.getHeight() && y_direction == 1 ))
+		else if ((y_coordinate > 0) || (y_coordinate < c.getHeight() && y_direction == 1 ))
 			y_coordinate += (y_direction);
 	}
 
@@ -136,6 +136,7 @@ public class Item{
 	// methods that deal with horizontal movement. These functions don't actually move the Item, they set the direction.
 	// actual movements will occur when the the object's move method is called.
 	public void moveRight() {
+		
 		x_direction = 2;
 	}
 	public void moveLeft() {

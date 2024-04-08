@@ -51,8 +51,8 @@ public class Sprite {
 
 	}
 
-	public boolean collision(Sprite otherSprite) {
-		return getBounds().intersects(otherSprite.getBounds());
+	public boolean collision(Guard guard) {
+		return getBounds().intersects(guard.getBounds());
 
 	}
 
@@ -98,11 +98,11 @@ public class Sprite {
 	//			   the Sprite,.
 	public void move(Component c){
 		// move to the right or left - speed will be positive
-		if (!isDead && ((x_coordinate > - (2*imageResource.getImageOffset()) && x_direction == -2 || x_direction == -5) ||
+		if (!isDead && ((x_coordinate > - (imageResource.getImageOffset()) && x_direction == -2 || x_direction == -5) ||
 				(x_coordinate + imageResource.getImage().getIconWidth() + imageResource.getImageOffset() < c.getWidth() && (x_direction == 2 || x_direction == 5) )))
 			x_coordinate += (x_direction);
 		// jump
-		else if (!isDead && ((y_coordinate > 0 && y_direction == -1) || 
+		else if (!isDead && ((y_coordinate >= -10 && y_direction == -1) || 
 				(y_coordinate + imageResource.getImage().getIconWidth() < c.getHeight() && y_direction == 1 )))
 			y_coordinate += (y_direction);
 

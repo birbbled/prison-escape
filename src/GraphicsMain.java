@@ -15,8 +15,8 @@ public class GraphicsMain extends JFrame{
 	public static void main(String[] args) throws InterruptedException {
 		System.out.println("print");
 
-		//thePlayer = new MyAudioPlayer(".//sounds//prison.mp3", true);
-		//thePlayer.start();
+//		thePlayer = new MyAudioPlayer(".//sounds//prison.mp3", true);
+//		thePlayer.start();
 
 		GraphicsMain window = new GraphicsMain();
 		JPanel p = new JPanel();
