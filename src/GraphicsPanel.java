@@ -117,6 +117,8 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
 		leaders.add(" ");
 		times.add(999.9);
 		
+		sprite = new Sprite(50, 340);	
+		guardSpeech = new Item(1500, 250, "images/objects/guardSpeech.png", 3); 
 		
 
 		// The Sprite constuctor has two parameter - - the x coordinate and y coordinate
@@ -245,8 +247,6 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
 
 		}
 		else if (actualState == playState) {
-			sprite = new Sprite(50, 340);	
-			guardSpeech = new Item(1500, 250, "images/objects/guardSpeech.png", 3); 
 			
 			guardSpeech.draw(g2, this);
 			countdown = 200;
@@ -335,7 +335,15 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
 				}
 			}
 			
+			sprite.die();
+			//System.out.println(elapseTime);
+			
 			elapseTime = 0;
+			
+			for (int i = items.size() -1; i >= 0; i--) {
+				items.remove(i);
+			}
+			repaint();
 		}
 		
 		else if (actualState == 5) {
@@ -442,15 +450,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
 				}
 				this.repaint();
 			}
-//System.out.println(guardTime);
-//			if (elapseTime >= guardTime && elapseTime <= period) {
-//				guardSpeech.x_coordinate = 850;
-//			}
-//			else {
-//				guardSpeech.x_coordinate = 1500;
-//				repaint();	
-//			}
-//			
+
 		}
 	}
 
@@ -564,7 +564,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, MouseListener,
 
 		if (actualState == leaderboard) {
 			if(c.contains(e.getX(), e.getY())) {
-				actualState = 0;
+				actualState = 2;
 				repaint();
 			}
 		}
